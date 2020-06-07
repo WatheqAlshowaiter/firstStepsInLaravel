@@ -39,3 +39,18 @@ Route::get('/contact', 'PostsController@contact');
 
 Route::get('/post/{id}/{title}', 'PostsController@post');
 
+Route::get('/insert',function(){
+    DB::insert("INSERT into posts SET title=:title, content=:content ",['php titles', 'some content']);
+});
+
+Route::get('/read',function(){
+    $result = DB::select('Select * from posts where id = :id',[1]);
+    foreach($result as $post){ return $post->title .", " .$post->content;}
+});
+Route::get('/update',function(){
+    return DB::update('UPDATE posts SET title= "updated title" where id =:id',[1]);
+});
+
+Route::get('/delete',function(){
+    return DB::update('DELETE FROM posts where id =:id',[3]);
+});
