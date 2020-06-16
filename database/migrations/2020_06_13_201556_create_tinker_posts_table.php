@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePosts extends Migration
+class CreateTinkerPostsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,11 @@ class CreatePosts extends Migration
      */
     public function up()
     {
-        Schema::create('posts', function (Blueprint $table) {
+        Schema::create('tinker_posts', function (Blueprint $table) {
             $table->id();
-            // $table->integer('user_id')->unsigned();
+            $table->integer("user_id")->nullable()->unsigned()->index();
             $table->string("title");
-            $table->text("content");
+            $table->text("body");
             $table->timestamps();
         });
     }
@@ -29,6 +29,6 @@ class CreatePosts extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('posts');
+        Schema::dropIfExists('tinker_posts');
     }
 }

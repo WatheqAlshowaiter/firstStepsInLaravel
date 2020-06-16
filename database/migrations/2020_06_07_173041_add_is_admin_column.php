@@ -16,6 +16,8 @@ class AddIsAdminColumn extends Migration
         Schema::table('posts', function (Blueprint $table) {
             //
             $table->unsignedTinyInteger("is_admin")->default('0');
+            // $table->
+
         });
     }
 
