@@ -250,7 +250,6 @@ Route::get('/tag/post', function ($id) {
 */
 
 Route::get('tinkercreate', function () {
-
 });
 
 
@@ -261,15 +260,15 @@ Route::get('tinkercreate', function () {
 */
 
 // insert
-Route::get('/onetoone/insert',function(){
-        $user = OneToOneUser::findOrFail(1);
-        $address = new OneToOnAddress(['name'=>'Alsab3een, 45th St.']);
+Route::get('/onetoone/insert', function () {
+    $user = OneToOneUser::findOrFail(1);
+    $address = new OneToOnAddress(['name' => 'Alsab3een, 45th St.']);
 
-        $user->address()->save($address);
+    $user->address()->save($address);
 });
 
 // update
-Route::get('/onetoone/update',function(){
+Route::get('/onetoone/update', function () {
     $address = OneToOnAddress::whereUserId(1)->first();
     $address->name = "Bait Bous, 45th St.";
     $address->save();
@@ -277,14 +276,125 @@ Route::get('/onetoone/update',function(){
 
 
 // read
-Route::get('/onetoone/read',function(){
+Route::get('/onetoone/read', function () {
     $user = OneToOneUser::findOrFail(1);
     echo $user->address->name;
 });
 
 // delete
-Route::get('/onetoone/delete',function(){
-     $user = OneToOneUser::findOrFail(1);
+Route::get('/onetoone/delete', function () {
+    $user = OneToOneUser::findOrFail(1);
     $user->address()->delete();
     return "deleted successfully";
+});
+
+
+/*
+|--------------------------------------------------------------------------
+| One To Many Relationship
+|--------------------------------------------------------------------------
+*/
+
+use App\OneToManyPost;
+use App\OneToManyUser;
+
+// create / insert data
+Route::get('/onetomany/create', function () {
+    // get user
+    $user = OneToManyUser::findOrFail(2);
+    // get post
+    $post = OneToManyPost::create(['title' => 'tile number 3', 'body' => 'body number 3']);
+    // insert with relationship
+    $user->posts()->save($post);
+});
+
+// read data
+Route::get('/onetomany/read/', function () {
+    // get user
+    $user = OneToManyUser::find(1);
+    // loop over the object then echo data
+    foreach ($user->posts as $post) {
+        echo "<b>title:</b> " . $post->title . " | <b>content:</b>" . $post->body .  '<br>';
+    }
+});
+
+// update data
+
+Route::get('/onetomany/update/', function () {
+    // get user
+    $user = OneToManyUser::find(1);
+    // update
+    $user->posts()->where("id", 2)->update(['title' => 'updated title', 'body' => 'updated body']);
+});
+
+// delet data
+
+Route::get('/onetomany/delete/', function () {
+    // get user
+    $user = OneToManyUser::find(2);
+    // update
+    $user->posts()->where("id", 4)->delete();
+});
+
+
+/*
+|--------------------------------------------------------------------------
+| Many To Many Relationship
+|--------------------------------------------------------------------------
+*/
+
+
+use App\ManyToManyUser;
+use App\ManyToManyRole;
+
+
+// create / insert data
+Route::get('/manytomany/create', function () {
+    $user = ManyToManyUser::find(1);
+    $user->roles()->save(new ManyToManyRole(['name' => 'admin']));
+});
+
+// read data
+Route::get('/manytomany/read/', function () {
+    $user = ManyToManyUser::find(1);
+    foreach ($user->roles as $role) {
+        echo $role . '<br>';
+    }
+});
+
+// update data
+Route::get('/manytomany/update/', function () {
+    $user = ManyToManyUser::find(1);
+    if ($user->has('roles')) {
+        foreach ($user->roles as $role) {
+            if ($role == "Administrator") {
+                $role->name = "subscriber";
+                $role->save();
+            }
+        }
+    }
+});
+
+// delet data
+Route::get('/manytomany/delete/', function () {
+    $user = ManyToManyUser::findOrFail(1);
+    $user->roles->delete();
+});
+
+// attach
+Route::get('/manytomany/atach/', function () {
+    $user = ManyToManyUser::findOrFail(1);
+    $user->roles()->attach(2);
+});
+
+// detach
+Route::get('/manytomany/detach/', function () {
+    $user = ManyToManyUser::findOrFail(1);
+    $user->roles()->detach(2);
+});
+
+// sync (and delete all others)
+Route::get('/manytomany/sync/', function () {
+    $user = ManyToManyUser::findOrFail(1);
+    $user->roles()->sync([6,7]);
 });
