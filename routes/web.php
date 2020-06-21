@@ -398,3 +398,14 @@ Route::get('/manytomany/sync/', function () {
     $user = ManyToManyUser::findOrFail(1);
     $user->roles()->sync([6,7]);
 });
+
+
+
+
+/*
+|--------------------------------------------------------------------------
+| Post Form Section
+|--------------------------------------------------------------------------
+*/
+
+Route::resource('posts','PostsController');
